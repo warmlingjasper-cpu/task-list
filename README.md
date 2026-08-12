@@ -28,8 +28,6 @@ CSS3
 JavaScript
 Bootstrap 5
 SQLite
-Screenshots
-Task List
 
 <img width="1223" height="451" alt="image" src="https://github.com/user-attachments/assets/8daf55cb-e696-4dbe-8081-a95a8d6eacd4" />
 
