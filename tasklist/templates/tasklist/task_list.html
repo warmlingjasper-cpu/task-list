@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-3">
+
+    <h1 class="mb-4">Tasks</h1>
+
+    <!-- FILTRO + NEW TASK -->
+
+    <div class="d-flex justify-content-between align-items-end mb-4">
+
+        <!-- FILTRO -->
+        <form method="GET" id="filterForm">
+            <div class="d-flex align-items-end gap-2">
+            
+                <!-- START DATE -->
+
+                <div>
+
+                    <label class="form-label mb-1">
+                        Start date
+                    </label>
+
+                    <input 
+                        type="date" 
+                        name="start_date" 
+                        class="form-control date-filter-input" 
+                        value="{{ start_date|default:'' }}">
+
+                </div>
+
+
+            <!-- END DATE -->
+
+            <div>
+
+                <label class="form-label mb-1">
+                    End date
+                </label>
+
+                <input 
+                    type="date" 
+                    name="end_date" 
+                    class="form-control date-filter-input" 
+                    value="{{ end_date|default:'' }}">
+
+            </div>
+
+            <!-- TODAY -->
+            
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="setToday()">
+                Today
+            </button>
+
+            <button type="submit" class="btn btn-outline-secondary">
+                Filter
+            </button>
+
+            <a href="{% url 'tasklist' %}" class="btn btn-outline-secondary">
+                Clear
+            </a>
+
+            
+
+            </div>
+
+        </form>
+
+    <a href="{% url 'task_create' %}" class="btn btn-primary mb-3">
+        New Task
+    </a>
+
+</div>
+
+<br>
+
+<div class="table-responsive">
+    <table class="table table-hover w-100">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th class="task-title">Title</th>
+                <th class="task-description">Description</th>
+                <th class="task-startdate">Start Date</th>
+                <th class="task-enddate">End Date</th>
+                <th class="task-status">Status</th>
+                <th class="task-action text-end">Action</th>
+
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.start_date|date:"d/m/Y" }}</td>
+                <td>{{ task.end_date|date:"d/m/Y" }}</td>
+
+                <td>
+
+                    {% if task.status == "PENDING" %}
+
+                    <span class="badge text-bg-warning">
+                        Pending
+                    </span>
+
+                    {% elif task.status == "IN_PROGRESS" %}
+
+                    <span class="badge text-bg-primary">
+                        In Progress
+                    </span>
+
+                    {% elif task.status == "COMPLETED" %}
+
+                    <span class="badge text-bg-success">
+                        Completed
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <td class="text-end">
+                    <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-primary">
+                        Edit
+                    </a>
+                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-primary">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="7" class="py-3 text-start">
+                    No task found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+</div>
+
+<script>
+    function setToday() {
+        const today = new Date().toISOString().split("T")[0];
+
+        document.querySelector('input[name="start_date"]').value = today;
+        document.querySelector('input[name="end_date"]').value = today;
+
+        document.getElementById("filterForm").requestSubmit();
+    }
+</script>
+
+{% endblock %}
